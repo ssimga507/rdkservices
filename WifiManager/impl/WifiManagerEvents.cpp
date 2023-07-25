@@ -28,7 +28,7 @@
 
 // RDK
 #include "rdk/iarmbus/libIBus.h"
-#include "wifiSrvMgrIarmIf.h"
+#include "wifiSrvMgrRpcIf.h"
 
 using namespace WPEFramework;
 using namespace WPEFramework::Plugin;
@@ -85,7 +85,7 @@ void WifiManagerEvents::iarmEventHandler(char const* owner, IARM_EventId_t event
     switch (eventId) {
         case IARM_BUS_WIFI_MGR_EVENT_onWIFIStateChanged:
         {
-            IARM_BUS_WiFiSrvMgr_EventData_t* eventData = reinterpret_cast<IARM_BUS_WiFiSrvMgr_EventData_t *>(data);
+            WSM_RPC_EventData_t* eventData = reinterpret_cast<WSM_RPC_EventData_t *>(data);
             LOGINFO("Event IARM_BUS_WIFI_MGR_EVENT_onWIFIStateChanged received; state=%d", eventData->data.wifiStateChange.state);
 
             // Hardcode 'isLNF' for the moment
@@ -95,7 +95,7 @@ void WifiManagerEvents::iarmEventHandler(char const* owner, IARM_EventId_t event
 
         case IARM_BUS_WIFI_MGR_EVENT_onError:
         {
-            IARM_BUS_WiFiSrvMgr_EventData_t* eventData = reinterpret_cast<IARM_BUS_WiFiSrvMgr_EventData_t *>(data);
+            WSM_RPC_EventData_t* eventData = reinterpret_cast<WSM_RPC_EventData_t *>(data);
             LOGINFO("Event IARM_BUS_WIFI_MGR_EVENT_onError received; code=%d", eventData->data.wifiError.code);
 
             WifiManager::getInstance().onError(ErrorCode(eventData->data.wifiError.code));

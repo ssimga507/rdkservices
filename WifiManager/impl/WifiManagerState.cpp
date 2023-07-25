@@ -19,8 +19,8 @@
 
 #include "WifiManagerState.h"
 
-#include "wifiSrvMgrIarmIf.h"
-#include "netsrvmgrIarm.h"
+#include "wifiSrvMgrRpcIf.h"
+#include "netsrvmgrRpc.h"
 #include "libIBus.h"
 #include "UtilsJsonRpc.h"
 
@@ -28,7 +28,7 @@ using namespace WPEFramework::Plugin;
 using namespace std;
 
 namespace {
-    WifiState to_wifi_state(WiFiStatusCode_t code) {
+    WifiState to_wifi_state(WIFIMGR_StatusCode_t code) {
         switch(code){
             case WIFI_UNINSTALLED: return WifiState::UNINSTALLED;
             case WIFI_DISABLED: return WifiState::DISABLED;
@@ -66,7 +66,7 @@ uint32_t WifiManagerState::getCurrentState(const JsonObject &parameters, JsonObj
 {
     LOGINFOMETHOD();
     IARM_Result_t retVal = IARM_RESULT_SUCCESS;
-    IARM_Bus_WiFiSrvMgr_Param_t param;
+    WSM_RPC_Param_t param;
 
     memset(&param, 0, sizeof(param));
 
@@ -84,7 +84,7 @@ uint32_t WifiManagerState::getCurrentState(const JsonObject &parameters, JsonObj
 uint32_t WifiManagerState::getConnectedSSID(const JsonObject &parameters, JsonObject &response) const
 {
     IARM_Result_t retVal = IARM_RESULT_SUCCESS;
-    IARM_Bus_WiFiSrvMgr_Param_t param;
+    WSM_RPC_Param_t param;
 
     memset(&param, 0, sizeof(param));
 
@@ -110,7 +110,7 @@ uint32_t WifiManagerState::setEnabled(const JsonObject &parameters, JsonObject &
     LOGINFOMETHOD();
     returnIfBooleanParamNotFound(parameters, "enable");
 
-    IARM_BUS_NetSrvMgr_Iface_EventData_t param;
+    NSM_RPC_Iface_EventData_t param;
     memset(&param, 0, sizeof(param));
 
     strncpy(param.setInterface, "WIFI", INTERFACE_SIZE - 1);
