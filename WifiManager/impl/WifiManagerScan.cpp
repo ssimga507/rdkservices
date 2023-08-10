@@ -29,7 +29,7 @@
 
 // RDK
 #include "rdk/iarmbus/libIBus.h"
-#include "wifiSrvMgrIarmIf.h"
+#include "wifiSrvMgrRpcIf.h"
 
 // std
 #include <sstream>
@@ -166,7 +166,7 @@ uint32_t WifiManagerScan::getAvailableSSIDsAsync(const JsonObject& parameters, J
     LOGINFOMETHOD();
 
     // There are no parameters
-    IARM_Bus_WiFiSrvMgr_SsidList_Param_t param;
+    WSM_RPC_SsidList_Param_t param;
     memset(&param, 0, sizeof(param));
 
     // Issue the query via IARM bus, the response will be sent as an event
@@ -175,7 +175,7 @@ uint32_t WifiManagerScan::getAvailableSSIDsAsync(const JsonObject& parameters, J
                     IARM_BUS_NM_SRV_MGR_NAME,
                     IARM_BUS_WIFI_MGR_API_getAvailableSSIDsAsync,
                     reinterpret_cast<void *>(&param),
-                    sizeof(IARM_Bus_WiFiSrvMgr_SsidList_Param_t)) );
+                    sizeof(WSM_RPC_SsidList_Param_t)) );
     if(res == IARM_RESULT_SUCCESS) {
         returnResponse(true);
     } else {
@@ -203,7 +203,7 @@ uint32_t WifiManagerScan::getAvailableSSIDsAsyncIncr(const JsonObject &parameter
     LOGINFOMETHOD()
 
     // There are no parameters
-    IARM_Bus_WiFiSrvMgr_SsidList_Param_t param;
+    WSM_RPC_SsidList_Param_t param;
     memset(&param, 0, sizeof(param));
 
     // Issue the query via IARM bus, the response will be sent as an event
@@ -212,7 +212,7 @@ uint32_t WifiManagerScan::getAvailableSSIDsAsyncIncr(const JsonObject &parameter
                     IARM_BUS_NM_SRV_MGR_NAME,
                     IARM_BUS_WIFI_MGR_API_getAvailableSSIDsAsyncIncr,
                     reinterpret_cast<void *>(&param),
-                    sizeof(IARM_Bus_WiFiSrvMgr_SsidList_Param_t)) );
+                    sizeof(WSM_RPC_SsidList_Param_t)) );
     if(res == IARM_RESULT_SUCCESS) {
         returnResponse(true);
     } else {
@@ -237,7 +237,7 @@ uint32_t WifiManagerScan::stopScan(const JsonObject& parameters, JsonObject& res
     LOGINFOMETHOD()
 
     // No parameters
-    IARM_Bus_WiFiSrvMgr_Param_t param;
+    WSM_RPC_Param_t param;
     memset(&param, 0, sizeof(param));
 
     IARM_Result_t res;
@@ -245,7 +245,7 @@ uint32_t WifiManagerScan::stopScan(const JsonObject& parameters, JsonObject& res
                     IARM_BUS_NM_SRV_MGR_NAME,
                     IARM_BUS_WIFI_MGR_API_stopProgressiveWifiScanning,
                     reinterpret_cast<void*>(&param),
-                    sizeof(IARM_Bus_WiFiSrvMgr_Param_t)) );
+                    sizeof(WSM_RPC_Param_t)) );
 
     returnResponse(res == IARM_RESULT_SUCCESS);
 }
@@ -266,7 +266,7 @@ void WifiManagerScan::iarmEventHandler(char const* owner, IARM_EventId_t eventId
         return;
 
     if ((eventId == IARM_BUS_WIFI_MGR_EVENT_onAvailableSSIDs) || (eventId == IARM_BUS_WIFI_MGR_EVENT_onAvailableSSIDsIncr)) {
-        IARM_BUS_WiFiSrvMgr_EventData_t const* eventData = reinterpret_cast<IARM_BUS_WiFiSrvMgr_EventData_t*>(data);
+        WSM_RPC_EventData_t const* eventData = reinterpret_cast<WSM_RPC_EventData_t*>(data);
 
         LOGINFO("Event IARM_BUS_WIFI_MGR_EVENT_onAvailableSSIDs[Incr] received. '%s'", eventData->data.wifiSSIDList.ssid_list);
 

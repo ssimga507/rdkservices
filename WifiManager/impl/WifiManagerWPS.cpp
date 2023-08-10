@@ -20,7 +20,7 @@
 #include "WifiManagerWPS.h"
 #include "UtilsJsonRpc.h"
 #include "libIBus.h"
-#include "wifiSrvMgrIarmIf.h"
+#include "wifiSrvMgrRpcIf.h"
 
 namespace WPEFramework
 {
@@ -45,7 +45,7 @@ namespace WPEFramework
         uint32_t WifiManagerWPS::initiateWPSPairing(const JsonObject &parameters, JsonObject &response)
         {
             LOGINFOMETHOD();
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
 
             IARM_Result_t retVal = IARM_Bus_Call(IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_initiateWPSPairing, (void *)&param, sizeof(param));
@@ -66,7 +66,7 @@ namespace WPEFramework
             }
 
             string method = "";
-            IARM_Bus_WiFiSrvMgr_WPS_Parameters_t wps_parameters;
+            WSM_RPC_WPS_Parameters_t wps_parameters;
 
             getStringParameter("method", method);
             if (method == "PBC")
@@ -119,7 +119,7 @@ namespace WPEFramework
         uint32_t WifiManagerWPS::cancelWPSPairing(const JsonObject &parameters, JsonObject &response)
         {
             LOGINFOMETHOD();
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
 
             IARM_Result_t retVal = IARM_Bus_Call(IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_cancelWPSPairing, (void *)&param, sizeof(param));
@@ -138,12 +138,12 @@ namespace WPEFramework
             returnIfNumberParamNotFound(parameters, "securityMode");
 
             bool saved = false;
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
 
             strncpy(param.data.connect.ssid, parameters["ssid"].String().c_str(), SSID_SIZE - 1);
             strncpy(param.data.connect.passphrase, parameters["passphrase"].String().c_str(), PASSPHRASE_BUFF - 1);
-            param.data.connect.security_mode = static_cast<SsidSecurity>(parameters["securityMode"].Number());
+            param.data.connect.security_mode = static_cast<WIFIMGR_SsidSecurity>(parameters["securityMode"].Number());
 
             IARM_Result_t retVal = IARM_Bus_Call(IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_saveSSID, (void *)&param, sizeof(param));
             saved = (retVal == IARM_RESULT_SUCCESS) && param.status;
@@ -158,7 +158,7 @@ namespace WPEFramework
             LOGINFOMETHOD();
             bool cleared = false;
 
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
 
             IARM_Result_t retVal = IARM_Bus_Call(IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_clearSSID, (void *)&param, sizeof(param));
@@ -172,7 +172,7 @@ namespace WPEFramework
         uint32_t WifiManagerWPS::getPairedSSID(const JsonObject &parameters, JsonObject &response)
         {
             LOGINFOMETHOD();
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
             bool result = false;
 
@@ -200,7 +200,7 @@ namespace WPEFramework
         uint32_t WifiManagerWPS::getPairedSSIDInfo(const JsonObject &parameters, JsonObject &response)
         {
             LOGINFOMETHOD();
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
             bool result = false;
 
@@ -229,7 +229,7 @@ namespace WPEFramework
         uint32_t WifiManagerWPS::isPaired(const JsonObject &parameters, JsonObject &response)
         {
             LOGINFOMETHOD();
-            IARM_Bus_WiFiSrvMgr_Param_t param;
+            WSM_RPC_Param_t param;
             memset(&param, 0, sizeof(param));
             int ssid_len = 0;
 

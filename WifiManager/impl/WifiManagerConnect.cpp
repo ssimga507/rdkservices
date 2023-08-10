@@ -19,7 +19,7 @@
 
 #include "WifiManagerConnect.h"
 
-#include "wifiSrvMgrIarmIf.h"
+#include "wifiSrvMgrRpcIf.h"
 #include "libIBus.h"
 #include "UtilsJsonRpc.h"
 
@@ -69,7 +69,7 @@ uint32_t WifiManagerConnect::connect(const JsonObject &parameters, JsonObject &r
 uint32_t WifiManagerConnect::disconnect(const JsonObject &parameters, JsonObject &response)
 {
     LOGINFOMETHOD();
-    IARM_Bus_WiFiSrvMgr_Param_t param;
+    WSM_RPC_Param_t param;
     memset(&param, 0, sizeof(param));
 
     IARM_Result_t retVal = IARM_Bus_Call(IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_disconnectSSID, (void *)&param, sizeof(param));
@@ -83,14 +83,14 @@ bool WifiManagerConnect::connect(const std::string &ssid, const std::string &pas
 {
     bool success = false;
     IARM_Result_t retVal = IARM_RESULT_SUCCESS;
-    IARM_Bus_WiFiSrvMgr_Param_t param;
+    WSM_RPC_Param_t param;
     memset(&param, 0, sizeof(param));
 
     if(ssid.length() || passphrase.length())
     {
         ssid.copy(param.data.connect.ssid, sizeof(param.data.connect.ssid) - 1);
         passphrase.copy(param.data.connect.passphrase, sizeof(param.data.connect.passphrase) - 1);
-        param.data.connect.security_mode = (SsidSecurity)securityMode;
+        param.data.connect.security_mode = (WIFIMGR_SsidSecurity)securityMode;
     }
 
     retVal = IARM_Bus_Call( IARM_BUS_NM_SRV_MGR_NAME, IARM_BUS_WIFI_MGR_API_connect, (void *)&param, sizeof(param));
